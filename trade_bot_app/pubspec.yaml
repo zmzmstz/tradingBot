@@ -9,6 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.0.0  # BLoC için
+  equatable: ^2.0.0     # State ve event karşılaştırmaları için
+  shared_preferences: ^2.0.0  # Verileri yerel olarak saklamak için (örneğin favoriler)
 
 dev_dependencies:
   flutter_test:
@@ -17,3 +20,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - lib/assets/images/
