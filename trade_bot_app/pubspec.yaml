@@ -11,7 +11,12 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.1.6  # BLoC için
   equatable: ^2.0.5     # State ve event karşılaştırmaları için
-  #shared_preferences: ^2.3.3  # Verileri yerel olarak saklamak için (örneğin favoriler)
+  flutter_dotenv: ^5.0.2 # .env dosyası okumak için
+  provider: ^6.0.5      # State management için
+  http: ^1.2.2
+  intl: ^0.18.1
+  web_socket_channel: ^2.1.0
+  # shared_preferences: ^2.3.3  # Verileri yerel olarak saklamak için (örneğin favoriler)
 
 dev_dependencies:
   flutter_test:
@@ -22,3 +27,4 @@ flutter:
   uses-material-design: true
   assets:
     - lib/assets/images/
+    - .env

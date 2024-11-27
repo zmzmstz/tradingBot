@@ -1,23 +1,34 @@
 import 'package:flutter/material.dart';
-import 'screens/splash_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'blocs/coin/coin_bloc.dart';
+import 'blocs/coin/coin_event.dart';
+import 'repositories/coin_repository.dart';
+import 'screens/main_screen.dart';
 
-void main() {
-  runApp(const MainApp());
+void main() async {
+  await dotenv.load(fileName: ".env");
+  runApp(MyApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Trade Bot App',
-      initialRoute: '/',
-      routes: {
-        '/': (context) => SplashScreen(),
-        '/home': (context) => Scaffold(body: Center(child: Text('HomeScreen'),),),
-      },
+    final coinRepository = CoinRepository(apiKey: dotenv.env['BINANCE_API_KEY']!);
+
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => CoinBloc(coinRepository)
+            ..add(
+              FetchCoinsEvent(['BTCUSDT', 'ETHUSDT', 'ADAUSDT', 'BNBUSDT', 'XRPUSDT']), // Önemli coinler
+            ),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: MainScreen(),
+      ),
     );
   }
 }
