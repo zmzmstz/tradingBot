@@ -5,6 +5,7 @@ import 'blocs/coin/coin_bloc.dart';
 import 'blocs/coin/coin_event.dart';
 import 'repositories/coin_repository.dart';
 import 'screens/main_screen.dart';
+import 'screens/splash_screen.dart'; // Splash Screen'i ekledik
 
 void main() async {
   await dotenv.load(fileName: ".env");
@@ -27,7 +28,11 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: MainScreen(),
+        initialRoute: '/', // Başlangıç rotası
+        routes: {
+          '/': (context) => SplashScreen(), // Splash Screen başlangıç ekranı
+          '/home': (context) => MainScreen(), // Splash sonrası ana ekran
+        },
       ),
     );
   }

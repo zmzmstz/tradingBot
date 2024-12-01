@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'buy_sell_page.dart';
 
 class CoinDetailPage extends StatelessWidget {
   final Map<String, dynamic> coin; // Coin bilgisi
@@ -32,6 +34,57 @@ class CoinDetailPage extends StatelessWidget {
                 fontSize: 18,
                 color: double.tryParse(coin['P'])! > 0 ? Colors.green : Colors.red,
               ),
+            ),
+            SizedBox(height: 32),
+            Text(
+              'Price Chart (24h)',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16),
+            Expanded(
+              child: LineChart(
+                LineChartData(
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: List.generate(
+                        10,
+                        (index) => FlSpot(index.toDouble(), (index * 10 + 5).toDouble()),
+                      ),
+                      isCurved: true,
+                      dotData: FlDotData(show: false),
+                      color: Colors.blue,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BuySellPage(coin: coin, action: 'Buy'),
+                      ),
+                    );
+                  },
+                  child: Text('Buy'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BuySellPage(coin: coin, action: 'Sell'),
+                      ),
+                    );
+                  },
+                  child: Text('Sell'),
+                ),
+              ],
             ),
           ],
         ),
