@@ -6,9 +6,10 @@ import '../../blocs/profile/profile_event.dart';
 import '../../blocs/profile/profile_state.dart';
 
 class ProfileScreen extends StatelessWidget {
+  final UserRepository userRepository;
   final String username;
 
-  ProfileScreen({required this.username});
+  ProfileScreen({required this.username, required this.userRepository});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class ProfileScreen extends StatelessWidget {
       ),
       body: BlocProvider(
         create: (context) => ProfileBloc(
-          userRepository: UserRepository(),
+          userRepository: userRepository,
         )..add(LoadProfile(username: username)),
         child: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {

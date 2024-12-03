@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../services/websocket_service.dart';
 import '../coin/coin_detail_page.dart';
 import '../../widgets/coin_widget.dart';
-import '../../repositories/user_repository.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback onNavigateToIndicators;
