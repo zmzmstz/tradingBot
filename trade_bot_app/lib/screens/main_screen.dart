@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:trade_bot_app/repositories/bot_repository.dart';
 import 'package:trade_bot_app/screens/portfolio/portfolio_screen.dart';
 import 'package:trade_bot_app/screens/profile/profile_screen.dart';
 import 'indicators/indicator_screen.dart';
@@ -7,6 +8,7 @@ import '../repositories/user_repository.dart';
 
 class MainScreen extends StatefulWidget {
   final UserRepository userRepository = UserRepository();
+  final BotRepository botRepository = BotRepository();
   
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -24,7 +26,7 @@ class _MainScreenState extends State<MainScreen> {
     _screens = [
       HomeScreen(onNavigateToIndicators: navigateToIndicators, username: 'testuser'),
       PortfolioScreen(userRepository: widget.userRepository, username: 'testuser',),
-      IndicatorScreen(),
+      IndicatorScreen(botRepository: widget.botRepository, username: 'testuser',),
       ProfileScreen(username: 'testuser', userRepository: widget.userRepository),
     ];
   }

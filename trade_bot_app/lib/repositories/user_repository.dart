@@ -1,4 +1,4 @@
-import '../data/users.dart'; // users.dart dosyasını import edin
+import '../data/users.dart'; // Statik kullanıcı verilerini içe aktarın
 import '../models/user_model.dart';
 
 class UserRepository {
@@ -64,7 +64,7 @@ class UserRepository {
     required String symbol,
     required double amount,
     required String action,
-    required double currentPrice, // Fiyat artık parametre olarak geliyor
+    required double currentPrice,
   }) async {
     final usersList = await _readUsers();
     final userIndex =
