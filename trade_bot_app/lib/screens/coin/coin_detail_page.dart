@@ -1,23 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'buy_sell_page.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../../repositories/user_repository.dart';
+import 'buy_sell_page.dart';
 
-class CoinDetailPage extends StatelessWidget {
+class CoinDetailPage extends StatefulWidget {
   final Map<String, dynamic> coin; // Coin bilgisi
-  final UserRepository userRepository = UserRepository(); // Kullanıcı verilerini yöneten repository
   final String username; // Kullanıcı adı
 
-  CoinDetailPage({
-    required this.coin,
-    required this.username,
-  });
+  CoinDetailPage({required this.coin, required this.username});
+
+  @override
+  _CoinDetailPageState createState() => _CoinDetailPageState();
+}
+
+class _CoinDetailPageState extends State<CoinDetailPage> {
+  final UserRepository userRepository = UserRepository();
+  List<FlSpot> priceSpots = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPriceData();
+  }
+
+  Future<void> _fetchPriceData() async {
+    try {
+      const interval = '1h'; // 1 saatlik veri
+      final symbol = widget.coin['s']; // Coin sembolü
+      final response = await http.get(
+        Uri.parse(
+            'https://api.binance.com/api/v3/klines?symbol=$symbol&interval=$interval&limit=24'),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+
+        // FlSpot noktalarını oluştur
+        final List<FlSpot> spots = data.asMap().entries.map((entry) {
+          final index = entry.key.toDouble(); // Zaman ekseni
+          final closingPrice = double.parse(entry.value[4]); // Kapanış fiyatı
+          return FlSpot(index, closingPrice);
+        }).toList();
+
+        setState(() {
+          priceSpots = spots;
+          isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to fetch price data');
+      }
+    } catch (e) {
+      print('Error fetching price data: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(coin['s']), // Coin sembolü
+        title: Text(widget.coin['s']), // Coin sembolü
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -25,44 +72,55 @@ class CoinDetailPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Symbol: ${coin['s']}',
+              'Symbol: ${widget.coin['s']}',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
             Text(
-              'Current Price: \$${coin['c']}',
+              'Current Price: \$${widget.coin['c']}',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 16),
             Text(
-              'Price Change: ${coin['P']}%',
+              'Price Change: ${widget.coin['P']}%',
               style: TextStyle(
                 fontSize: 18,
-                color: double.tryParse(coin['P'])! > 0 ? Colors.green : Colors.red,
+                color: double.tryParse(widget.coin['P'])! > 0
+                    ? Colors.green
+                    : Colors.red,
               ),
             ),
             SizedBox(height: 32),
             Text(
-              'Price Chart (24h)',
+              'Price Chart (Last 24h)',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
             Expanded(
-              child: LineChart(
-                LineChartData(
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: List.generate(
-                        10,
-                        (index) => FlSpot(index.toDouble(), (index * 10 + 5).toDouble()),
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : LineChart(
+                      LineChartData(
+                        lineBarsData: [
+                          LineChartBarData(
+                            spots: priceSpots,
+                            isCurved: true,
+                            dotData: FlDotData(show: false),
+                            color: Colors.blue,
+                          ),
+                        ],
+                        titlesData: FlTitlesData(
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: true),
+                          ),
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(showTitles: true),
+                          ),
+                        ),
+                        gridData: FlGridData(show: true),
+                        borderData: FlBorderData(show: true),
                       ),
-                      isCurved: true,
-                      dotData: FlDotData(show: false),
-                      color: Colors.blue,
                     ),
-                  ],
-                ),
-              ),
             ),
             SizedBox(height: 16),
             Row(
@@ -74,10 +132,10 @@ class CoinDetailPage extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => BuySellPage(
-                          coin: coin,
+                          coin: widget.coin,
                           action: 'Buy',
                           userRepository: userRepository,
-                          username: username,
+                          username: widget.username,
                         ),
                       ),
                     );
@@ -90,10 +148,10 @@ class CoinDetailPage extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => BuySellPage(
-                          coin: coin,
+                          coin: widget.coin,
                           action: 'Sell',
                           userRepository: userRepository,
-                          username: username,
+                          username: widget.username,
                         ),
                       ),
                     );
