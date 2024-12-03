@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:trade_bot_app/screens/portfolio/portfolio_screen.dart';
+import 'package:trade_bot_app/screens/profile/profile_screen.dart';
 import 'indicators/indicator_screen.dart';
 import 'home/home_screen.dart';
 
@@ -17,10 +19,10 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _screens = [
-      HomeScreen(onNavigateToIndicators: navigateToIndicators),
-      Center(child: Text('Portfolio')),
+      HomeScreen(onNavigateToIndicators: navigateToIndicators, username: 'testuser'),
+      PortfolioScreen(),
       IndicatorScreen(),
-      Center(child: Text('Profile')),
+      ProfileScreen(username: 'testuser'),
     ];
   }
 

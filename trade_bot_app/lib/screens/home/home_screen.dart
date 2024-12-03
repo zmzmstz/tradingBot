@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import '../../services/websocket_service.dart';
 import '../coin/coin_detail_page.dart';
 import '../../widgets/coin_widget.dart';
+import '../../repositories/user_repository.dart';
 
 class HomeScreen extends StatefulWidget {
   final VoidCallback onNavigateToIndicators;
+  final String username;
 
-  const HomeScreen({required this.onNavigateToIndicators});
+  const HomeScreen({
+    required this.onNavigateToIndicators,
+    required this.username,
+  });
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -52,47 +57,46 @@ class _HomeScreenState extends State<HomeScreen> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Card(
-  color: Colors.blue,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(12),
-  ),
-  child: Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        color: Colors.blue,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
             children: [
-              Text(
-                'Welcome User,',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Welcome ${widget.username},',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'Find the most effective indicators',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: widget.onNavigateToIndicators,
+                      child: Text('Choose Indicators'),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Find the most effective indicators',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: widget.onNavigateToIndicators,
-                child: Text('Choose Indicators'),
               ),
             ],
           ),
         ),
-      ],
-    ),
-  ),
-),
-
+      ),
     );
   }
 
@@ -120,7 +124,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CoinDetailPage(coin: coin),
+                              builder: (context) => CoinDetailPage(
+                                coin: coin,
+                                username: widget.username,
+                              ),
                             ),
                           );
                         },

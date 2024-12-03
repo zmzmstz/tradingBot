@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'buy_sell_page.dart';
+import '../../repositories/user_repository.dart';
 
 class CoinDetailPage extends StatelessWidget {
   final Map<String, dynamic> coin; // Coin bilgisi
+  final UserRepository userRepository = UserRepository(); // Kullanıcı verilerini yöneten repository
+  final String username; // Kullanıcı adı
 
-  const CoinDetailPage({required this.coin});
+  CoinDetailPage({
+    required this.coin,
+    required this.username,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +73,12 @@ class CoinDetailPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BuySellPage(coin: coin, action: 'Buy'),
+                        builder: (context) => BuySellPage(
+                          coin: coin,
+                          action: 'Buy',
+                          userRepository: userRepository,
+                          username: username,
+                        ),
                       ),
                     );
                   },
@@ -78,7 +89,12 @@ class CoinDetailPage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => BuySellPage(coin: coin, action: 'Sell'),
+                        builder: (context) => BuySellPage(
+                          coin: coin,
+                          action: 'Sell',
+                          userRepository: userRepository,
+                          username: username,
+                        ),
                       ),
                     );
                   },
